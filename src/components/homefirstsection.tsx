@@ -88,8 +88,8 @@ function Homefirstsection() {
       const [pesticideDetails, setPesticideDetails] = useState([
         ...pesticideDetailsSchema
       ]);
-      const calculateAverage = (details: { [key: string]: number }[], key: string) => {
-        const values = details.map(d => d[key]);
+      const calculateAverage = (details: { [key: string]: number | string }[], key: string) => {
+        const values = details.map(d => Number(d[key]));
         const sum = values.reduce((a, b) => a + b, 0);
         return Math.round(sum / values.length);
       };
@@ -192,7 +192,7 @@ function Homefirstsection() {
       ];
     
   return (
-    <section className="w-full flex justify-center items-center min-h-[40vh]">
+    <section className="w-full flex justify-center items-center">
       <div
         className="grid grid-cols-3 gap-4 rounded-2xl shadow-xl p-5 relative"
         style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(24px)" }}

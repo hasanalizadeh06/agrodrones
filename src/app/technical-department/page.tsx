@@ -1,8 +1,11 @@
 import React from 'react'
+import TechnicalDepartment from '../../components/technicaldepartament'
 
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <TechnicalDepartment />
+    </div>
   )
 }
 

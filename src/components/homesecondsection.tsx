@@ -57,13 +57,6 @@ function Homesecondsection() {
               localIrrigationRepeat++;
               if (localIrrigationRepeat < repeatCount) {
                 localIrrigationArea = 0;
-                setTotalProgress(prevTotal => {
-                  const newTotal = { ...prevTotal };
-                  for (let i = 0; i < 6; i++) {
-                    newTotal[i] = (newTotal[i] || 0) + perArea;
-                  }
-                  return newTotal;
-                });
                 return {}; // Reset animation progress for next repeat
               } else {
                 // All repeats complete
@@ -97,6 +90,11 @@ function Homesecondsection() {
 
             if (currentProgress < perArea) {
               newProgress[localFertArea] = Math.min(currentProgress + 0.5, perArea);
+              // Update total progress incrementally
+              setFertTotalProgress(prevTotal => ({
+                ...prevTotal,
+                [localFertArea]: (prevTotal[localFertArea] || 0) + 0.5
+              }));
             } else if (localFertArea < 5) {
               localFertArea++;
             } else {
@@ -104,13 +102,6 @@ function Homesecondsection() {
               localFertRepeat++;
               if (localFertRepeat < repeatCount) {
                 localFertArea = 0;
-                setFertTotalProgress(prevTotal => {
-                  const newTotal = { ...prevTotal };
-                  for (let i = 0; i < 6; i++) {
-                    newTotal[i] = (newTotal[i] || 0) + perArea;
-                  }
-                  return newTotal;
-                });
                 return {}; // Reset animation progress for next repeat
               } else {
                 // All repeats complete
@@ -144,6 +135,11 @@ function Homesecondsection() {
 
             if (currentProgress < perArea) {
               newProgress[localPestArea] = Math.min(currentProgress + 0.5, perArea);
+              // Update total progress incrementally
+              setPestTotalProgress(prevTotal => ({
+                ...prevTotal,
+                [localPestArea]: (prevTotal[localPestArea] || 0) + 0.5
+              }));
             } else if (localPestArea < 5) {
               localPestArea++;
             } else {
@@ -151,13 +147,6 @@ function Homesecondsection() {
               localPestRepeat++;
               if (localPestRepeat < repeatCount) {
                 localPestArea = 0;
-                setPestTotalProgress(prevTotal => {
-                  const newTotal = { ...prevTotal };
-                  for (let i = 0; i < 6; i++) {
-                    newTotal[i] = (newTotal[i] || 0) + perArea;
-                  }
-                  return newTotal;
-                });
                 return {}; // Reset animation progress for next repeat
               } else {
                 // All repeats complete
@@ -227,18 +216,10 @@ function Homesecondsection() {
     setPestCurrentArea(0);
     setPestCurrentRepeat(0);
     
-    // Show alert after state update
-    setTimeout(() => {
-      if (wasRunning) {
-        alert(`Task Stopped for ${number === 1 ? 'Irrigation' : number === 2 ? 'Fertilization' : 'Pesticide'}`);
-      } else {
-        alert(`Task Started for ${number === 1 ? 'Irrigation' : number === 2 ? 'Fertilization' : 'Pesticide'}!\nRepeat: ${repeatCount}\nSpeed: ${speed}x\nAmount: ${amount} ${getAmountUnit()}\nHeight: ${height} m`);
-      }
-    }, 0);
   };
 
   return (
-    <section className="w-full flex justify-center items-center min-h-[40vh]">
+    <section className="w-full flex justify-center items-center">
       <div className="bg-white/20 rounded-2xl shadow-xl p-6 flex flex-col items-center gap-6 max-w-4xl">
         <div className="flex gap-2">
           <button
@@ -269,6 +250,7 @@ function Homesecondsection() {
               <div className="text-center font-bold text-white">Speed (x)</div>
               <div className="text-center font-bold text-white">Amount ({getAmountUnit()})</div>
               <div className="text-center font-bold text-white">Height (m)</div>
+
               <select
                 value={speed}
                 onChange={(e) => setSpeed(Number(e.target.value))}

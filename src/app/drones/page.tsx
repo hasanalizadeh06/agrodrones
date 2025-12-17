@@ -1,8 +1,11 @@
 import React from 'react'
+import DronesTable from '../../components/drones'
 
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <DronesTable />
+    </div>
   )
 }
 
