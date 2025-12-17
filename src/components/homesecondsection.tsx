@@ -301,7 +301,7 @@ function Homesecondsection() {
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-500"
+                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-1000"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-green-800">🌱 Area {idx + 1}</div>
@@ -330,7 +330,7 @@ function Homesecondsection() {
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500"
+                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-1000"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-green-800">🌱 Area {idx + 1}</div>
@@ -356,7 +356,7 @@ function Homesecondsection() {
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-red-400 to-red-600 transition-all duration-500"
+                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-red-400 to-red-600 transition-all duration-1000"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-white">🐛 Area {idx + 1}</div>

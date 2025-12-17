@@ -8,7 +8,6 @@ function Navbar() {
     { label: "🏠 Home", href: "/" },
     { label: "🚁 Drones", href: "/drones" },
     { label: "🛠️ Technical Department", href: "/technical-department" },
-    { label: "ℹ️ About System", href: "/about-system" },
   ];
 
   return (
