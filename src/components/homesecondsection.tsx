@@ -220,25 +220,25 @@ function Homesecondsection() {
 
   return (
     <section className="w-full flex justify-center items-center">
-      <div className="bg-white/20 rounded-2xl shadow-xl p-6 flex flex-col items-center gap-6 max-w-4xl">
-        <div className="flex gap-2">
+      <div className="bg-white/20 rounded-2xl shadow-xl p-3 sm:p-4 md:p-6 flex flex-col items-center gap-4 sm:gap-6 w-full max-w-4xl">
+        <div className="flex flex-col sm:flex-row gap-2 w-full justify-center">
           <button
             onClick={() => setSelectedAction(selectedAction === 'Suvarma' ? null : 'Suvarma')}
-            className={`px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 ${selectedAction === 'Suvarma' ? 'bg-blue-500 text-white' : 'bg-blue-200 text-blue-800'}`}
+            className={`w-full sm:w-auto px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 justify-center ${selectedAction === 'Suvarma' ? 'bg-blue-500 text-white' : 'bg-blue-200 text-blue-800'}`}
           >
             💧 Irrigation
             <FaChevronDown className={`text-lg transition-transform duration-200 ${selectedAction === 'Suvarma' ? 'rotate-180' : ''}`} />
           </button>
           <button
             onClick={() => setSelectedAction(selectedAction === 'Gübreleme' ? null : 'Gübreleme')}
-            className={`px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 ${selectedAction === 'Gübreleme' ? 'bg-green-500 text-white' : 'bg-green-200 text-green-800'}`}
+            className={`w-full sm:w-auto px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 justify-center ${selectedAction === 'Gübreleme' ? 'bg-green-500 text-white' : 'bg-green-200 text-green-800'}`}
           >
             🌱 Fertilization
             <FaChevronDown className={`text-lg transition-transform duration-200 ${selectedAction === 'Gübreleme' ? 'rotate-180' : ''}`} />
           </button>
           <button
             onClick={() => setSelectedAction(selectedAction === 'Dermanlama' ? null : 'Dermanlama')}
-            className={`px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 ${selectedAction === 'Dermanlama' ? 'bg-red-500 text-white' : 'bg-red-200 text-red-800'}`}
+            className={`w-full sm:w-auto px-4 py-2 rounded-xl font-bold transition duration-200 flex items-center gap-2 justify-center ${selectedAction === 'Dermanlama' ? 'bg-red-500 text-white' : 'bg-red-200 text-red-800'}`}
           >
             🐛 Pesticide
             <FaChevronDown className={`text-lg transition-transform duration-200 ${selectedAction === 'Dermanlama' ? 'rotate-180' : ''}`} />
@@ -246,35 +246,40 @@ function Homesecondsection() {
         </div>
         {selectedAction && (
           <>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center font-bold text-white">Speed (x)</div>
-              <div className="text-center font-bold text-white">Amount ({getAmountUnit()})</div>
-              <div className="text-center font-bold text-white">Height (m)</div>
-
-              <select
-                value={speed}
-                onChange={(e) => setSpeed(Number(e.target.value))}
-                className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <option value={0.5}>0.5x</option>
-                <option value={1}>1x</option>
-                <option value={1.5}>1.5x</option>
-                <option value={2}>2x</option>
-              </select>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-                min="0"
-              />
-              <input
-                type="number"
-                value={height}
-                onChange={(e) => setHeight(Number(e.target.value))}
-                className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-                min="0"
-              />
+            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 w-full">
+              <div className="flex flex-row items-center justify-between sm:block w-full">
+                <span className="font-bold text-white mr-2 sm:mr-0">Speed (x)</span>
+                <select
+                  value={speed}
+                  onChange={(e) => setSpeed(Number(e.target.value))}
+                  className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 w-28 sm:w-full"
+                >
+                  <option value={0.5}>0.5x</option>
+                  <option value={1}>1x</option>
+                  <option value={1.5}>1.5x</option>
+                  <option value={2}>2x</option>
+                </select>
+              </div>
+              <div className="flex flex-row items-center justify-between sm:block w-full">
+                <span className="font-bold text-white mr-2 sm:mr-0">Amount ({getAmountUnit()})</span>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 w-28 sm:w-full"
+                  min="0"
+                />
+              </div>
+              <div className="flex flex-row items-center justify-between sm:block w-full">
+                <span className="font-bold text-white mr-2 sm:mr-0">Height (m)</span>
+                <input
+                  type="number"
+                  value={height}
+                  onChange={(e) => setHeight(Number(e.target.value))}
+                  className="px-2 py-2 rounded-xl bg-white/80 text-black shadow-inner border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 w-28 sm:w-full"
+                  min="0"
+                />
+              </div>
             </div>
             <button
               onClick={() => startTask(getActionNumber(selectedAction!)!)}

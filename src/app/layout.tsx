@@ -39,7 +39,7 @@ export default function RootLayout({
           className="fixed inset-0 w-full h-full object-cover -z-10 blur-2xl pointer-events-none select-none"
         />
         <Navbar />
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-8">{children}</div>
       </body>
     </html>
   );

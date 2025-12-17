@@ -194,22 +194,22 @@ function Homefirstsection() {
   return (
     <section className="w-full flex justify-center items-center">
       <div
-        className="grid grid-cols-3 gap-4 rounded-2xl shadow-xl p-5 relative"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 rounded-2xl shadow-xl p-3 sm:p-4 md:p-5 w-full max-w-4xl relative"
         style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(24px)" }}
       >
         {data.map((item, idx) => (
           <div
             key={item.label}
-            className="flex flex-col items-stretch min-w-50 max-w-65 relative"
+            className="flex flex-col items-stretch min-w-0 max-w-full sm:min-w-50 sm:max-w-65 relative"
           >
-            <div className="flex items-center justify-between bg-linear-to-br from-blue-200/80 to-blue-400/80 rounded-xl px-5 py-3 mb-2 shadow-md h-16">
-              <span className="text-lg font-bold flex items-center gap-2 w-full justify-center">{item.label}</span>
+            <div className="flex items-center justify-between bg-linear-to-br from-blue-200/80 to-blue-400/80 rounded-xl px-3 sm:px-5 py-2 sm:py-3 mb-2 shadow-md h-14 sm:h-16">
+              <span className="text-base sm:text-lg font-bold flex items-center gap-2 w-full justify-center">{item.label}</span>
             </div>
-            <div className="flex items-center bg-white/90 justify-between px-5 py-4 rounded-xl shadow-inner h-auto"
+            <div className="flex items-center bg-white/90 justify-between px-3 sm:px-5 py-3 sm:py-4 rounded-xl shadow-inner h-auto"
             >
               <div className="flex flex-col">
                 {typeof item.value === 'string' ? (
-                  <span className="text-2xl font-extrabold text-blue-700 drop-shadow-sm">{item.value}</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-blue-700 drop-shadow-sm">{item.value}</span>
                 ) : (
                   <div className="grid grid-cols-2 gap-1">
                     <span className="text-xs text-blue-700">N: {item.value.nitrogen}</span>
@@ -218,7 +218,7 @@ function Homefirstsection() {
                     <span className="text-xs text-blue-700">Mg: {item.value.magnesium}</span>
                   </div>
                 )}
-                <span className="text-sm text-gray-500 font-medium">{item.unit}</span>
+                <span className="text-xs sm:text-sm text-gray-500 font-medium">{item.unit}</span>
               </div>
               <button
                 className={
@@ -235,49 +235,46 @@ function Homefirstsection() {
         ))}
         {/* Dropdown panel spanning full row */}
         {openedSection !== null && (
-          <div className="col-span-3 transition-all duration-300">
-            <div className="bg-white/20 rounded-xl p-3 flex flex-col items-center w-full min-h-55">
+          <div className="col-span-1 sm:col-span-2 md:col-span-3 transition-all duration-300">
+            <div className="bg-white/20 rounded-xl p-2 sm:p-3 flex flex-col items-center w-full min-h-55">
               <div className="w-full">
-                <div className="grid grid-cols-3 grid-rows-2 gap-3 rounded-lg overflow-hidden min-h-50">
-                  {[...Array(2)].map((_, rowIdx) => (
-                    <>
-                      {[...Array(3)].map((_, colIdx) => {
-                        const cellIdx = rowIdx * 3 + colIdx;
-                        return (
-                          <div
-                            key={`cell-${rowIdx}-${colIdx}`}
-                            className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative"
-                          >
-                            <Image src={bgbox} alt="" fill className="object-cover opacity-60 z-[-1] rounded-md blur-sm" />
-                            <div className="text-lg font-bold text-blue-800">🌱 {data[openedSection!].details[cellIdx].area}</div>
-                            {openedSection === 2 ? (
-                              (() => {
-                                const detail = data[openedSection].details[cellIdx] as ChemicalDetail;
-                                return (
-                                  <>
-                                    <div className="text-xs">Nitrogen (N): {detail.nitrogen}</div>
-                                    <div className="text-xs">Potassium (K): {detail.potassium}</div>
-                                    <div className="text-xs">Phosphorus (P): {detail.phosphorus}</div>
-                                    <div className="text-xs">Magnesium (Mg): {detail.magnesium}</div>
-                                  </>
-                                );
-                              })()
-                            ) : (
-                              (() => {
-                                const detail = data[openedSection!].details[cellIdx] as ClimateDetail;
-                                return (
-                                  <>
-                                    <div className="text-lg font-bold text-blue-900">{detail.value}</div>
-                                    <div className="text-xs text-gray-500">{detail.unit}</div>
-                                  </>
-                                );
-                              })()
-                            )}
-                          </div>
-                        );
-                      })}
-                    </>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-3 grid-rows-6 sm:grid-rows-2 gap-2 sm:gap-3 rounded-lg overflow-hidden min-h-50">
+                  {[...Array(6)].map((_, cellIdx) => {
+                    const rowIdx = Math.floor(cellIdx / 3);
+                    const colIdx = cellIdx % 3;
+                    return (
+                      <div
+                        key={`cell-${rowIdx}-${colIdx}`}
+                        className="flex flex-col items-center justify-center min-h-28 sm:min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative"
+                      >
+                        <Image src={bgbox} alt="" fill className="object-cover opacity-60 z-[-1] rounded-md blur-sm" />
+                        <div className="text-base sm:text-lg font-bold text-blue-800">🌱 {data[openedSection!].details[cellIdx].area}</div>
+                        {openedSection === 2 ? (
+                          (() => {
+                            const detail = data[openedSection].details[cellIdx] as ChemicalDetail;
+                            return (
+                              <>
+                                <div className="text-xs">Nitrogen (N): {detail.nitrogen}</div>
+                                <div className="text-xs">Potassium (K): {detail.potassium}</div>
+                                <div className="text-xs">Phosphorus (P): {detail.phosphorus}</div>
+                                <div className="text-xs">Magnesium (Mg): {detail.magnesium}</div>
+                              </>
+                            );
+                          })()
+                        ) : (
+                          (() => {
+                            const detail = data[openedSection!].details[cellIdx] as ClimateDetail;
+                            return (
+                              <>
+                                <div className="text-lg font-bold text-blue-900">{detail.value}</div>
+                                <div className="text-xs text-gray-500">{detail.unit}</div>
+                              </>
+                            );
+                          })()
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
