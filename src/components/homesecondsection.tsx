@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { FaCheck } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
+import "./homesecondsection-animations.css";
 
 function Homesecondsection() {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
@@ -9,6 +11,10 @@ function Homesecondsection() {
   const [amount, setAmount] = useState<number>(5);
   const [height, setHeight] = useState<number>(2);
   const [taskStarted, setTaskStarted] = useState<Set<number>>(new Set());
+  // New: Track selected areas (0-5)
+  const [selectedAreas, setSelectedAreas] = useState<number[]>([0,1,2,3,4,5]);
+  // Track which box was just checked for checkmark animation
+  const [justChecked, setJustChecked] = useState<{ [key: number]: boolean }>({});
   // Irrigation states
   const [animationProgress, setAnimationProgress] = useState<{ [key: number]: number }>({});
   const [totalProgress, setTotalProgress] = useState<{ [key: number]: number }>({});
@@ -30,38 +36,48 @@ function Homesecondsection() {
     let fertilizationInterval: NodeJS.Timeout | null = null;
     let pesticideInterval: NodeJS.Timeout | null = null;
 
+    // Helper: get next selected area index
+    const getNextSelectedArea = (current: number) => {
+      const sorted = [...selectedAreas].sort((a, b) => a - b);
+      const idx = sorted.indexOf(current);
+      return idx !== -1 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+    };
+
     // Irrigation animation
     if (taskStarted.has(1)) {
-      let localIrrigationArea = 0;
+      let localIrrigationArea = selectedAreas.length > 0 ? selectedAreas[0] : 0;
       let localIrrigationRepeat = 0;
       const irrigationIntervalTime = 500 / speed;
 
       irrigationInterval = setInterval(() => {
-        if (localIrrigationRepeat < repeatCount) {
+        if (localIrrigationRepeat < repeatCount && selectedAreas.length > 0) {
           setAnimationProgress(prev => {
             const newProgress = { ...prev };
-            const perArea = amount / 6;
+            const perArea = amount / selectedAreas.length;
             const currentProgress = newProgress[localIrrigationArea] || 0;
 
             if (currentProgress < perArea) {
-              newProgress[localIrrigationArea] = Math.min(currentProgress + 0.5, perArea);
+              newProgress[localIrrigationArea] = Math.min(currentProgress + 0.1, perArea);
               // Update total progress incrementally
               setTotalProgress(prevTotal => ({
                 ...prevTotal,
-                [localIrrigationArea]: (prevTotal[localIrrigationArea] || 0) + 0.5
+                [localIrrigationArea]: (prevTotal[localIrrigationArea] || 0) + 0.1
               }));
-            } else if (localIrrigationArea < 5) {
-              localIrrigationArea++;
             } else {
-              // One cycle complete - move to next repeat
-              localIrrigationRepeat++;
-              if (localIrrigationRepeat < repeatCount) {
-                localIrrigationArea = 0;
-                return {}; // Reset animation progress for next repeat
+              const nextArea = getNextSelectedArea(localIrrigationArea);
+              if (nextArea !== null) {
+                localIrrigationArea = nextArea;
               } else {
-                // All repeats complete
-                clearInterval(irrigationInterval!);
-                return prev;
+                // One cycle complete - move to next repeat
+                localIrrigationRepeat++;
+                if (localIrrigationRepeat < repeatCount) {
+                  localIrrigationArea = selectedAreas[0];
+                  return {}; // Reset animation progress for next repeat
+                } else {
+                  // All repeats complete
+                  clearInterval(irrigationInterval!);
+                  return prev;
+                }
               }
             }
             return newProgress;
@@ -77,36 +93,39 @@ function Homesecondsection() {
 
     // Fertilization animation
     if (taskStarted.has(2)) {
-      let localFertArea = 0;
+      let localFertArea = selectedAreas.length > 0 ? selectedAreas[0] : 0;
       let localFertRepeat = 0;
       const fertIntervalTime = 500 / speed;
 
       fertilizationInterval = setInterval(() => {
-        if (localFertRepeat < repeatCount) {
+        if (localFertRepeat < repeatCount && selectedAreas.length > 0) {
           setFertAnimationProgress(prev => {
             const newProgress = { ...prev };
-            const perArea = amount / 6;
+            const perArea = amount / selectedAreas.length;
             const currentProgress = newProgress[localFertArea] || 0;
 
             if (currentProgress < perArea) {
-              newProgress[localFertArea] = Math.min(currentProgress + 0.5, perArea);
+              newProgress[localFertArea] = Math.min(currentProgress + 0.1, perArea);
               // Update total progress incrementally
               setFertTotalProgress(prevTotal => ({
                 ...prevTotal,
-                [localFertArea]: (prevTotal[localFertArea] || 0) + 0.5
+                [localFertArea]: (prevTotal[localFertArea] || 0) + 0.1
               }));
-            } else if (localFertArea < 5) {
-              localFertArea++;
             } else {
-              // One cycle complete - move to next repeat
-              localFertRepeat++;
-              if (localFertRepeat < repeatCount) {
-                localFertArea = 0;
-                return {}; // Reset animation progress for next repeat
+              const nextArea = getNextSelectedArea(localFertArea);
+              if (nextArea !== null) {
+                localFertArea = nextArea;
               } else {
-                // All repeats complete
-                clearInterval(fertilizationInterval!);
-                return prev;
+                // One cycle complete - move to next repeat
+                localFertRepeat++;
+                if (localFertRepeat < repeatCount) {
+                  localFertArea = selectedAreas[0];
+                  return {}; // Reset animation progress for next repeat
+                } else {
+                  // All repeats complete
+                  clearInterval(fertilizationInterval!);
+                  return prev;
+                }
               }
             }
             return newProgress;
@@ -122,36 +141,39 @@ function Homesecondsection() {
 
     // Pesticide animation
     if (taskStarted.has(3)) {
-      let localPestArea = 0;
+      let localPestArea = selectedAreas.length > 0 ? selectedAreas[0] : 0;
       let localPestRepeat = 0;
       const pestIntervalTime = 500 / speed;
 
       pesticideInterval = setInterval(() => {
-        if (localPestRepeat < repeatCount) {
+        if (localPestRepeat < repeatCount && selectedAreas.length > 0) {
           setPestAnimationProgress(prev => {
             const newProgress = { ...prev };
-            const perArea = amount / 6;
+            const perArea = amount / selectedAreas.length;
             const currentProgress = newProgress[localPestArea] || 0;
 
             if (currentProgress < perArea) {
-              newProgress[localPestArea] = Math.min(currentProgress + 0.5, perArea);
+              newProgress[localPestArea] = Math.min(currentProgress + 0.1, perArea);
               // Update total progress incrementally
               setPestTotalProgress(prevTotal => ({
                 ...prevTotal,
-                [localPestArea]: (prevTotal[localPestArea] || 0) + 0.5
+                [localPestArea]: (prevTotal[localPestArea] || 0) + 0.1
               }));
-            } else if (localPestArea < 5) {
-              localPestArea++;
             } else {
-              // One cycle complete - move to next repeat
-              localPestRepeat++;
-              if (localPestRepeat < repeatCount) {
-                localPestArea = 0;
-                return {}; // Reset animation progress for next repeat
+              const nextArea = getNextSelectedArea(localPestArea);
+              if (nextArea !== null) {
+                localPestArea = nextArea;
               } else {
-                // All repeats complete
-                clearInterval(pesticideInterval!);
-                return prev;
+                // One cycle complete - move to next repeat
+                localPestRepeat++;
+                if (localPestRepeat < repeatCount) {
+                  localPestArea = selectedAreas[0];
+                  return {}; // Reset animation progress for next repeat
+                } else {
+                  // All repeats complete
+                  clearInterval(pesticideInterval!);
+                  return prev;
+                }
               }
             }
             return newProgress;
@@ -170,7 +192,7 @@ function Homesecondsection() {
       if (fertilizationInterval) clearInterval(fertilizationInterval);
       if (pesticideInterval) clearInterval(pesticideInterval);
     };
-  }, [taskStarted, amount, speed, repeatCount]);
+  }, [taskStarted, amount, speed, repeatCount, selectedAreas]);
 
   const getActionNumber = (action: string) => {
     switch (action) {
@@ -281,6 +303,47 @@ function Homesecondsection() {
                 />
               </div>
             </div>
+            
+            {/* Area selection boxes */}
+            <div className="flex justify-center gap-3 mb-2 w-[inherit]">
+              {Array.from({ length: 6 }, (_, idx) => {
+                const isChecked = selectedAreas.includes(idx);
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={`w-10 h-10 flex-1 rounded-xl border-2 flex items-center justify-center font-bold text-lg relative overflow-visible
+                      ${isChecked ? 'bg-green-500 text-white border-green-700 scale-105' : 'bg-white/80 text-blue-700 border-blue-300 hover:bg-blue-100'}`}
+                    style={{ zIndex: 1 }}
+                    onClick={() => {
+                      setSelectedAreas(prev => {
+                        let newArr;
+                        if (prev.includes(idx)) {
+                          newArr = prev.filter(i => i !== idx);
+                        } else {
+                          newArr = [...prev, idx].sort((a, b) => a - b);
+                          setJustChecked(jc => ({ ...jc, [idx]: true }));
+                          setTimeout(() => {
+                            setJustChecked(jc => ({ ...jc, [idx]: false }));
+                          }, 1000);
+                        }
+                        return newArr;
+                      });
+                    }}
+                  >
+                    {/* Border animation */}
+                    <span className={`absolute inset-0 pointer-events-none rounded-lg border-2 border-green-600 ${isChecked ? 'animate-border-draw' : 'border-transparent'}`}></span>
+                    <span className="relative z-10">{idx + 1}</span>
+                    {/* Checkmark animation */}
+                    {justChecked[idx] && (
+                      <span className="absolute inset-0 flex items-center justify-center z-20 animate-fade-in-out">
+                        <FaCheck className="text-white text-2xl drop-shadow-lg" />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
             <button
               onClick={() => startTask(getActionNumber(selectedAction!)!)}
               className={`text-white font-bold py-2 px-7 w-full rounded-xl shadow-lg transition duration-200 ${taskStarted.has(getActionNumber(selectedAction!)!) ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
@@ -291,22 +354,30 @@ function Homesecondsection() {
                 <div className="w-full">
                   <div className="grid grid-cols-3 grid-rows-2 gap-3 rounded-lg overflow-hidden min-h-50">
                     {Array.from({ length: 6 }, (_, idx) => {
+                      if (!selectedAreas.includes(idx)) {
+                        return (
+                          <div key={idx} className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-300 font-medium p-2 bg-white/40 rounded-md shadow-sm relative overflow-hidden opacity-50">
+                            <div className="relative z-10 text-lg font-bold">Area {idx + 1}</div>
+                            <div className="relative z-10 text-sm">Not selected</div>
+                          </div>
+                        );
+                      }
                       const progress = animationProgress[idx] || 0;
-                      const totalLiters = totalProgress[idx] || 0;
-                      const perArea = amount / 6;
-                      const percentage = (progress / perArea) * 100;
+                      const perArea = amount / selectedAreas.length;
+                      const displayProgress = Math.min(progress, perArea);
+                      const percentage = (displayProgress / perArea) * 100;
                       return (
                         <div
                           key={idx}
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-1000"
+                            className="absolute bottom-0 left-0 w-full bg-linear-to-r from-blue-400 to-blue-600 transition-all duration-500"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-green-800">🌱 Area {idx + 1}</div>
                           <div className="relative z-10 text-sm">Operation: Irrigation</div>
-                          <div className="relative z-10 text-sm">Progress: {totalLiters.toFixed(1)} L</div>
+                          <div className="relative z-10 text-sm">Progress: {displayProgress.toFixed(1)} L</div>
                         </div>
                       );
                     })}
@@ -320,22 +391,30 @@ function Homesecondsection() {
                 <div className="w-full">
                   <div className="grid grid-cols-3 grid-rows-2 gap-3 rounded-lg overflow-hidden min-h-50">
                     {Array.from({ length: 6 }, (_, idx) => {
+                      if (!selectedAreas.includes(idx)) {
+                        return (
+                          <div key={idx} className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-300 font-medium p-2 bg-white/40 rounded-md shadow-sm relative overflow-hidden opacity-50">
+                            <div className="relative z-10 text-lg font-bold">Area {idx + 1}</div>
+                            <div className="relative z-10 text-sm">Not selected</div>
+                          </div>
+                        );
+                      }
                       const progress = fertAnimationProgress[idx] || 0;
-                      const totalLiters = fertTotalProgress[idx] || 0;
-                      const perArea = amount / 6;
-                      const percentage = (progress / perArea) * 100;
+                      const perArea = amount / selectedAreas.length;
+                      const displayProgress = Math.min(progress, perArea);
+                      const percentage = (displayProgress / perArea) * 100;
                       return (
                         <div
                           key={idx}
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-1000"
+                            className="absolute bottom-0 left-0 w-full bg-linear-to-r from-green-400 to-green-600 transition-all duration-500"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-green-800">🌱 Area {idx + 1}</div>
                           <div className="relative z-10 text-sm">Operation: Fertilization</div>
-                          <div className="relative z-10 text-sm">Progress: {totalLiters.toFixed(1)} kg</div>
+                          <div className="relative z-10 text-sm">Progress: {displayProgress.toFixed(1)} kg</div>
                         </div>
                       );
                     })}
@@ -346,22 +425,30 @@ function Homesecondsection() {
                 <div className="w-full">
                   <div className="grid grid-cols-3 grid-rows-2 gap-3 rounded-lg overflow-hidden min-h-50">
                     {Array.from({ length: 6 }, (_, idx) => {
+                      if (!selectedAreas.includes(idx)) {
+                        return (
+                          <div key={idx} className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-300 font-medium p-2 bg-white/40 rounded-md shadow-sm relative overflow-hidden opacity-50">
+                            <div className="relative z-10 text-lg font-bold">Area {idx + 1}</div>
+                            <div className="relative z-10 text-sm">Not selected</div>
+                          </div>
+                        );
+                      }
                       const progress = pestAnimationProgress[idx] || 0;
-                      const totalLiters = pestTotalProgress[idx] || 0;
-                      const perArea = amount / 6;
-                      const percentage = (progress / perArea) * 100;
+                      const perArea = amount / selectedAreas.length;
+                      const displayProgress = Math.min(progress, perArea);
+                      const percentage = (displayProgress / perArea) * 100;
                       return (
                         <div
                           key={idx}
                           className="flex flex-col items-center justify-center min-h-35 border border-gray-100 text-gray-700 font-medium p-2 bg-white/20 rounded-md shadow-sm relative overflow-hidden"
                         >
                           <div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-red-400 to-red-600 transition-all duration-1000"
+                            className="absolute bottom-0 left-0 w-full bg-linear-to-r from-red-400 to-red-600 transition-all duration-500"
                             style={{ height: `${percentage}%` }}
                           ></div>
                           <div className="relative z-10 text-lg font-bold text-white">🐛 Area {idx + 1}</div>
                           <div className="relative z-10 text-white text-sm">Operation: Pesticide</div>
-                          <div className="relative z-10 text-white text-sm">Progress: {totalLiters.toFixed(1)} ml</div>
+                          <div className="relative z-10 text-white text-sm">Progress: {displayProgress.toFixed(1)} ml</div>
                         </div>
                       );
                     })}
